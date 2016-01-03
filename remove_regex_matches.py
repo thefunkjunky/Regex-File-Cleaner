@@ -1,6 +1,8 @@
 import os, argparse, tarfile, re, shutil, logging, random, time
 import datetime as datetime
 
+# TODO: Add verbose/quiet mode
+
 # Set date variables
 date = datetime.datetime.utcnow().strftime("%mm_%dd_%Yy")
 UTCtime = datetime.datetime.utcnow().strftime("%Hh_%Mm_%Ss")
@@ -139,7 +141,6 @@ if __name__ == '__main__':
     logging.info(
         "Loading regex's from regexfile {}.".format(args['regexfilelist']))
     regexlist = tryOpenFileAsList(args['regexfilelist'])
-
 
     logging.info(
         "Loading filelist {} for input file iteration.".format(args['filelist']))
