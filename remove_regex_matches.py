@@ -166,7 +166,7 @@ if __name__ == '__main__':
                 regexclear.stripFile(infile, filestrip)
 
     logging.debug("Creating log .tar.gz")
+    logging.info("Log file {}.tar.gz created.".format(logfilename))
     regexclear.tarFile(logfilename)
     os.remove(logfilename)
-    logging.info("Log file {}.tar.gz created.".format(logfilename))
 
