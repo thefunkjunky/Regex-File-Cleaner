@@ -49,6 +49,7 @@ class clearRegex(object):
                     + filestrip)
             return filestrip
         else:
+            logging.info("No matches found.")
             print("No matches found")
 
     def fileBackup(self, infile):
@@ -117,6 +118,9 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--test', 
         help="Test regex match using random file from input filelist",
         action="store_true")
+    # parser.add_argument('-v', "--verbose",
+    #     help="Toggles verbose mode.",
+    #     action="store_true")
 
     # Create args namespace, then convert to dictionary
     args=parser.parse_args()
