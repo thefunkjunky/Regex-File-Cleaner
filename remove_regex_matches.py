@@ -1,5 +1,4 @@
-import os, argparse, tarfile, re, shutil, logging, random, time
-import datetime as datetime
+import os, argparse, tarfile, re, shutil, logging, random, time, datetime
 
 # TODO: Add verbose/quiet mode
 
