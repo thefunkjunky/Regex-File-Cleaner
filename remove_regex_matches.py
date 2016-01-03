@@ -14,6 +14,13 @@ logfilename="rmRegexMatches_{}_at_{}.log".format(
     date, localtime_formatted)
 logging.basicConfig(filename=logfilename, level=logging.INFO)
 
+# Creates a print function that checks whether verbose mode is set
+def printline(line, verbose):
+    if verbose:
+        print(line)
+    else:
+        pass
+
 # Opens a file using readlines() and returns a list
 def tryOpenFileAsList(listfile):
     logging.debug("Loading filelist {}".format(listfile))
@@ -96,8 +103,8 @@ class clearRegex(object):
                 logging.debug("Writing file {}.".format(infile))
                 f.write(filestrip)
                 logging.info("File {} written.".format(infile))
-                print("Regex pattern matches for {} cleared from file {}.".format(
-                    regex, infile))
+                printline("Regex pattern matches for {} cleared from file {}.".format(
+                    regex, infile), args['verbose'])
                 logging.info("Successfully removed regex pattern matches for {} from {}".format(
                     regex, infile))
         except Exception as e:
@@ -123,15 +130,21 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--test', 
         help="Test regex match using random file from input filelist",
         action="store_true")
-    # parser.add_argument('-v', "--verbose",
-    #     help="Toggles verbose mode.",
-    #     action="store_true")
+    parser.add_argument('-v', "--verbose",
+        help="Toggles verbose mode.",
+        action="store_true")
 
     # Create args namespace, then convert to dictionary
     args=parser.parse_args()
     args=vars(args)
     if args['test']:
         print(args)
+
+    # Sets verbose mode
+    if args['verbose']:
+        verbose = True
+    else:
+        verbose = False
 
     # Init regex cleaner object
     regexclear = clearRegex(args)
@@ -152,11 +165,11 @@ if __name__ == '__main__':
     logging.debug("Begin regexclear.clearMatch loop over filelist files.")
     for infile in filelist:
         infile = infile.strip('\n')
-        print("Input file: {}".format(infile))
+        printline("Input file: {}".format(infile), verbose)
         # Make a backup before running every regex pattern match
         regexclear.fileBackup(infile)
         for regex in regexlist:
-            print("Regex: {}".format(regex))
+            printline("Regex: {}".format(regex), verbose)
             logging.info(
                 "Running regexclear on file '{}' and regex pattern '{}'".format(
                     infile, regex))
