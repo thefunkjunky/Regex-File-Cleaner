@@ -1,8 +1,17 @@
 import os, argparse, tarfile, re, shutil, logging, random, time
 import datetime as datetime
 
+# Set date variables
+date = datetime.datetime.utcnow().strftime("%mm_%dd_%Yy")
+UTCtime = datetime.datetime.utcnow().strftime("%Hh_%Mm_%Ss")
+localtime = time.localtime()
+localtime_formatted = "{}h_{}m_{}s".format(
+    localtime[3], localtime[4], localtime[5])
+
 # Set up logging and specify level
-logging.basicConfig(filename="rmRegexMatches.log", level=logging.INFO)
+logfilename="rmRegexMatches_{}_at_{}.log".format(
+    date, localtime_formatted)
+logging.basicConfig(filename=logfilename, level=logging.INFO)
 
 # Opens a file using readlines() and returns a list
 def tryOpenFileAsList(listfile):
@@ -59,7 +68,7 @@ class clearRegex(object):
             logging.info("Copying {} to {}.".format(infile, outfile))
             shutil.copyfile(infile, outfile)
             logging.debug("Creating {}.tar.gz".format(outfile))
-            self.tarFile(infile, outfile)
+            self.tarFile(outfile)
 
             os.remove(outfile)
             logging.debug("File {} removed.".format(outfile))
@@ -67,11 +76,11 @@ class clearRegex(object):
             logging.critical("File backup failed: {}".format(e))
             print("File Backup failed: {}".format(e))
 
-    def tarFile(self, infile, outfile):
+    def tarFile(self, infile):
         try:
-            with tarfile.open("{}.tar.gz".format(outfile), "w:gz") as tar:
-                tar.add(outfile)
-            logging.info("Tar file {}.tar.gz created.".format(outfile))
+            with tarfile.open("{}.tar.gz".format(infile), "w:gz") as tar:
+                tar.add(infile)
+            logging.info("Tar file {}.tar.gz created.".format(infile))
         except Exception as e:
             logging.critical("Tar file creation failed: {}".format(e))
             print("Tar file creation failed: {}".format(e))
@@ -97,12 +106,7 @@ class clearRegex(object):
 
 
 if __name__ == '__main__':
-    date = datetime.datetime.utcnow().strftime("%mm_%dd_%Yy")
-    UTCtime = datetime.datetime.utcnow().strftime("%Hh_%Mm_%Ss")
-    localtime = time.localtime()
-    localtime_formatted = "{}h_{}m_{}s".format(
-        localtime[3], localtime[4], localtime[5])
-
+    
     logging.info("Launching Regex Remover at: {}, {} local, {} UTC.".format(
         date, localtime_formatted, UTCtime)
         )
@@ -159,4 +163,9 @@ if __name__ == '__main__':
             filestrip = regexclear.clearMatch(infile, regex)
             if filestrip and not args['test']:
                 regexclear.stripFile(infile, filestrip)
+
+    logging.debug("Creating log .tar.gz")
+    regexclear.tarFile(logfilename)
+    os.remove(logfilename)
+    logging.info("Log file {}.tar.gz created.".format(logfilename))
 
